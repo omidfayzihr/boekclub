@@ -127,3 +127,13 @@ form button[type="submit"]:hover {
     color: #6b5a47;
     font-size: 0.9rem;
 }
+
+.profile-info {
+    list-style: none;
+    padding: 0;
+}
+
+.profile-info li {
+    padding: 0.3rem 0;
+    border-bottom: 1px solid #e3dccd;
+}
