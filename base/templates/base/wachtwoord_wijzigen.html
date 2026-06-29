@@ -1,0 +1,13 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Wachtwoord wijzigen{% endblock %}
+
+{% block content %}
+<h1>Wachtwoord wijzigen</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Wachtwoord wijzigen</button>
+</form>
+<p><a href="{% url 'profiel' %}">Terug naar profiel</a></p>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Mijn profiel{% endblock %}
+
+{% block content %}
+<h1>Mijn profiel</h1>
+
+<ul class="profile-info">
+    <li>Woonplaats: {{ profile.city|default:"-" }}</li>
+    <li>Geboortedatum: {{ profile.date_of_birth|date:"d-m-Y"|default:"-" }}</li>
+    <li>Favoriete genre: {{ profile.favorite_genre|default:"-" }}</li>
+</ul>
+
+<h2>Gegevens aanpassen</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Opslaan</button>
+</form>
+
+<p><a href="{% url 'wachtwoord_wijzigen' %}">Wachtwoord wijzigen</a></p>
+{% endblock %}
