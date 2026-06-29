@@ -1,0 +1,16 @@
+<nav class="navbar">
+    <a class="brand" href="{% url 'index' %}">📚 Boekclub</a>
+    <div class="nav-links">
+        <a href="{% url 'index' %}">Home</a>
+        {% if user.is_authenticated %}
+            <span class="nav-user">Hoi, {{ user.username }}</span>
+            <form method="post" action="{% url 'logout' %}" class="logout-form">
+                {% csrf_token %}
+                <button type="submit" class="link-button">Uitloggen</button>
+            </form>
+        {% else %}
+            <a href="{% url 'login' %}">Inloggen</a>
+            <a href="{% url 'register' %}">Registreren</a>
+        {% endif %}
+    </div>
+</nav>

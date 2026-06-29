@@ -1,0 +1,14 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Home - Boekclub Leeslogboek{% endblock %}
+
+{% block content %}
+<h1>Welkom bij de Boekclub Leeslogboek</h1>
+<p>Houd je gelezen boeken en leesmomenten bij.</p>
+{% if user.is_authenticated %}
+    <p>Je bent ingelogd als <strong>{{ user.username }}</strong>.</p>
+{% else %}
+    <p><a href="{% url 'login' %}">Log in</a> of
+       <a href="{% url 'register' %}">registreer</a> om te beginnen.</p>
+{% endif %}
+{% endblock %}
