@@ -1,0 +1,26 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Profiel van {{ profiel_user.username }}{% endblock %}
+
+{% block content %}
+<h1>Leesmomenten van {{ profiel_user.username }}</h1>
+
+{% if sessies %}
+<table class="data-table">
+    <thead>
+        <tr><th>Datum</th><th>Boek</th><th>Score</th></tr>
+    </thead>
+    <tbody>
+        {% for sessie in sessies %}
+        <tr>
+            <td>{{ sessie.Date|date:"d-m-Y" }}</td>
+            <td><a href="{% url 'boek_detail' sessie.book.id %}">{{ sessie.book.Name }}</a></td>
+            <td>{{ sessie.Score|default:"-" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>{{ profiel_user.username }} heeft nog geen leesmomenten.</p>
+{% endif %}
+{% endblock %}

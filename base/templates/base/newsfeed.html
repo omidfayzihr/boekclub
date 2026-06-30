@@ -14,7 +14,7 @@
         {% for sessie in sessies %}
         <tr>
             <td style="padding: 8px;">{{ sessie.Date|date:"d-m-Y" }}</td>
-            <td style="padding: 8px;">{{ sessie.user.username }}</td> 
+            <td style="padding: 8px;"><a href="{% url 'publiek_profiel' sessie.user.username %}">{{ sessie.user.username }}</a></td>
             <td style="padding: 8px;"><a href="{% url 'boek_detail' sessie.book.id %}">{{ sessie.book.Name }}</a></td>
             <td style="padding: 8px;">{{ sessie.Score }}/10</td>
         </tr>
