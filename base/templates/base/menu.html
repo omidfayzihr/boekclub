@@ -1,7 +1,7 @@
 <nav class="navbar">
     <a class="brand" href="{% url 'index' %}">📚 Boekclub</a>
     <div class="nav-links">
-        <a href="{% url 'index' %}">Home</a>
+        <a href="{% url 'index' %}">Start</a>
         {% if user.is_authenticated %}
             <a href="{% url 'boek_toevoegen' %}">Boek voorstellen</a>
             {% if user.is_staff %}
@@ -12,7 +12,7 @@
             <a href="{% url 'boeken_overzicht' %}">Boeken</a>
             <a href="{% url 'leesmoment_toevoegen' %}">Leesmoment toevoegen</a>
             <a href="{% url 'mijn_leesmomenten' %}">Mijn leesmomenten</a>
-            <a href="{% url 'newsfeed' %}">Newsfeed</a>
+            <a href="{% url 'newsfeed' %}">Nieuwsoverzicht</a>
             <span class="nav-user">Hoi, {{ user.username }}</span>
             <form method="post" action="{% url 'logout' %}" class="logout-form">
                 {% csrf_token %}

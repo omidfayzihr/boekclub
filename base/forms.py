@@ -21,6 +21,11 @@ class BookForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = ['Name', 'PublicationYear', 'genre']
+        labels = {
+            'Name': 'Titel',
+            'PublicationYear': 'Publicatiejaar',
+            'genre': 'Genre',
+        }
     
 
 class ReadingSessionForm(forms.ModelForm):
