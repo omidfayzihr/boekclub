@@ -29,3 +29,7 @@ staticfiles/
 .coverage
 htmlcov/
 .pytest_cache/
+
+# Office-documenten (planning/opdracht) horen niet in de repo
+*.xlsx
+*.docx
