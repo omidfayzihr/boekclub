@@ -20,3 +20,24 @@ class Profile(models.Model):
 def create_profile(sender, instance, created, **kwargs):
     if created:
         Profile.objects.create(user=instance)
+
+class Book(models.Model):
+    Name = models.CharField(max_length=200)
+    PublicationYear = models.IntegerField()
+    genre = models.CharField(max_length=100)
+    Approved = models.BooleanField(default=False)
+    ApprovedBy = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
+    def __str__(self):
+        return self.Name
+
+class ReadingSession(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    Date = models.DateField()
+    Score = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.book.Name} ({self.Date})"
+
+
