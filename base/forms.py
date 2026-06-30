@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 from .models import Profile, Book, ReadingSession
 
 
@@ -53,3 +54,11 @@ class ReadingSessionForm(forms.ModelForm):
             if bestaand.exists():
                 raise forms.ValidationError('Je hebt dit boek op deze dag al toegevoegd.')
         return cleaned
+
+
+class RegisterForm(UserCreationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Geen lange helpteksten onder de velden tonen.
+        for veld in self.fields.values():
+            veld.help_text = ''

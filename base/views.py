@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, update_session_auth_hash
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
-from .forms import BookForm, ProfileForm, ReadingSessionForm
+from .forms import BookForm, ProfileForm, ReadingSessionForm, RegisterForm
 from .models import Book, ReadingSession
 from django.core.paginator import Paginator
 from django.db.models import Avg
@@ -17,14 +17,14 @@ def index(request):
 def register(request):
     # Bij POST het formulier valideren en opslaan, daarna direct inloggen.
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = RegisterForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             messages.success(request, 'Account aangemaakt, je bent ingelogd.')
             return redirect('index')
     else:
-        form = UserCreationForm()
+        form = RegisterForm()
     return render(request, 'registration/register.html', {'form': form})
 
 
@@ -186,7 +186,8 @@ def newsfeed(request):
 
 
 def boek_detail(request, book_id):
-    boek = get_object_or_404(Book, id=book_id)
+    # Alleen goedgekeurde boeken zijn zichtbaar voor gebruikers.
+    boek = get_object_or_404(Book, id=book_id, Approved=True)
     gemiddelde = boek.readingsession_set.aggregate(Avg('Score'))['Score__avg']
     if gemiddelde is not None:
         gemiddelde = round(gemiddelde, 1)
