@@ -16,6 +16,8 @@
     
     <p><strong>Gemiddelde score:</strong> {{ gemiddelde_score|default:"Nog geen scores" }}</p>
 
+    <p><a href="{% url 'leesmoment_voor_boek' boek.id %}">Leesmoment toevoegen voor dit boek</a></p>
+
 </div>
 
 {% endblock %}

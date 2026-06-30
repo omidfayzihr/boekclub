@@ -1,0 +1,35 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Mijn leesmomenten{% endblock %}
+
+{% block content %}
+<h1>Mijn leesmomenten</h1>
+
+<p><a href="{% url 'leesmoment_toevoegen' %}">Nieuw leesmoment toevoegen</a></p>
+
+{% if sessies %}
+<table class="data-table">
+    <thead>
+        <tr><th>Datum</th><th>Boek</th><th>Score</th><th></th></tr>
+    </thead>
+    <tbody>
+        {% for sessie in sessies %}
+        <tr>
+            <td>{{ sessie.Date|date:"d-m-Y" }}</td>
+            <td>{{ sessie.book.Name }}</td>
+            <td>{{ sessie.Score|default:"-" }}</td>
+            <td>
+                <a href="{% url 'leesmoment_aanpassen' sessie.pk %}">Aanpassen</a>
+                <form method="post" action="{% url 'leesmoment_verwijderen' sessie.pk %}" class="inline-form">
+                    {% csrf_token %}
+                    <button type="submit" class="link-button danger">Verwijderen</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>Je hebt nog geen leesmomenten toegevoegd.</p>
+{% endif %}
+{% endblock %}

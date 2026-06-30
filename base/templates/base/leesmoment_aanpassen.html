@@ -1,0 +1,13 @@
+{% extends 'base/base.html' %}
+
+{% block title %}Leesmoment aanpassen{% endblock %}
+
+{% block content %}
+<h1>Leesmoment aanpassen</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Opslaan</button>
+</form>
+<p><a href="{% url 'mijn_leesmomenten' %}">Terug naar mijn leesmomenten</a></p>
+{% endblock %}

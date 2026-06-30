@@ -1,13 +1,13 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import login, update_session_auth_hash
+from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from .forms import BookForm, ProfileForm, ReadingSessionForm
 from .models import Book, ReadingSession
 from django.core.paginator import Paginator
-from django.db.models import Avg, Count
-
+from django.db.models import Avg
 
 
 def index(request):
@@ -79,6 +79,7 @@ def boek_toevoegen(request):
 def is_admin(user):
     return user.is_staff
 
+
 @login_required
 @user_passes_test(is_admin)
 def boeken_beheer(request):
@@ -89,35 +90,87 @@ def boeken_beheer(request):
 @login_required
 @user_passes_test(is_admin)
 def boek_goedkeuren(request, book_id):
-    book = Book.objects.get(id=book_id)
-    book.Approved = True
-    book.ApprovedBy = request.user
-    book.save()
-    messages.success(request, f'"{book.Name}" goedgekeurd.')
+    book = get_object_or_404(Book, id=book_id)
+    if request.method == 'POST':
+        book.Approved = True
+        book.ApprovedBy = request.user
+        book.save()
+        messages.success(request, f'"{book.Name}" goedgekeurd.')
     return redirect('boeken_beheer')
 
 
 @login_required
 @user_passes_test(is_admin)
 def boek_afkeuren(request, book_id):
-    book = Book.objects.get(id=book_id)
-    book.delete()
-    messages.success(request, f'"{book.Name}" afgekeurd en verwijderd.')
+    book = get_object_or_404(Book, id=book_id)
+    if request.method == 'POST':
+        book.delete()
+        messages.success(request, f'"{book.Name}" afgekeurd en verwijderd.')
     return redirect('boeken_beheer')
 
+
 @login_required
-def leesmoment_toevoegen(request):
+def leesmoment_toevoegen(request, book_id=None):
     if request.method == 'POST':
-        form = ReadingSessionForm(request.POST)
+        form = ReadingSessionForm(request.POST, user=request.user)
         if form.is_valid():
             session = form.save(commit=False)
             session.user = request.user
             session.save()
             messages.success(request, 'Leesmoment toegevoegd.')
-            return redirect('index')
+            return redirect('mijn_leesmomenten')
     else:
-        form = ReadingSessionForm()
+        # Bij een directe link vanaf een boekpagina staat het boek alvast geselecteerd.
+        initial = {'book': book_id} if book_id else {}
+        form = ReadingSessionForm(user=request.user, initial=initial)
     return render(request, 'base/leesmoment_toevoegen.html', {'form': form})
+
+
+@login_required
+def mijn_leesmomenten(request):
+    sessies = ReadingSession.objects.filter(user=request.user).order_by('-Date')
+    return render(request, 'base/mijn_leesmomenten.html', {'sessies': sessies})
+
+
+@login_required
+def leesmoment_aanpassen(request, pk):
+    sessie = get_object_or_404(ReadingSession, pk=pk, user=request.user)
+    if request.method == 'POST':
+        form = ReadingSessionForm(request.POST, instance=sessie, user=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Leesmoment bijgewerkt.')
+            return redirect('mijn_leesmomenten')
+    else:
+        form = ReadingSessionForm(instance=sessie, user=request.user)
+    return render(request, 'base/leesmoment_aanpassen.html', {'form': form, 'sessie': sessie})
+
+
+@login_required
+def leesmoment_verwijderen(request, pk):
+    sessie = get_object_or_404(ReadingSession, pk=pk, user=request.user)
+    if request.method == 'POST':
+        sessie.delete()
+        messages.success(request, 'Leesmoment verwijderd.')
+    return redirect('mijn_leesmomenten')
+
+
+@login_required
+@user_passes_test(is_admin)
+def leesmomenten_beheer(request):
+    sessies = ReadingSession.objects.all().order_by('-Date')
+    return render(request, 'base/leesmomenten_beheer.html', {'sessies': sessies})
+
+
+@login_required
+@user_passes_test(is_admin)
+def leesmoment_admin_verwijderen(request, pk):
+    sessie = get_object_or_404(ReadingSession, pk=pk)
+    if request.method == 'POST':
+        sessie.delete()
+        messages.success(request, 'Leesmoment verwijderd.')
+    return redirect('leesmomenten_beheer')
+
 
 def boeken_overzicht(request):
     boeken_list = Book.objects.filter(Approved=True).order_by('Name')
@@ -126,24 +179,26 @@ def boeken_overzicht(request):
     boeken = paginator.get_page(page_number)
     return render(request, 'base/boeken_overzicht.html', {'boeken': boeken})
 
-def Newsfeed(request):
+
+def newsfeed(request):
     sessies = ReadingSession.objects.all().order_by('-Date')
     return render(request, 'base/newsfeed.html', {'sessies': sessies})
 
-def boek_detail(request, book_id):
-    boek = get_object_or_404(Book, id=book_id)
-    return render(request, 'base/boek_detail.html', {'boek': boek})
 
 def boek_detail(request, book_id):
-    # Haal het boek op
     boek = get_object_or_404(Book, id=book_id)
     gemiddelde = boek.readingsession_set.aggregate(Avg('Score'))['Score__avg']
-    
     if gemiddelde is not None:
         gemiddelde = round(gemiddelde, 1)
-        
     context = {
         'boek': boek,
-        'gemiddelde_score': gemiddelde
+        'gemiddelde_score': gemiddelde,
     }
     return render(request, 'base/boek_detail.html', context)
+
+
+def publiek_profiel(request, username):
+    profiel_user = get_object_or_404(User, username=username)
+    sessies = ReadingSession.objects.filter(user=profiel_user).order_by('-Date')
+    return render(request, 'base/publiek_profiel.html',
+                  {'profiel_user': profiel_user, 'sessies': sessies})

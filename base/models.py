@@ -37,6 +37,15 @@ class ReadingSession(models.Model):
     Date = models.DateField()
     Score = models.IntegerField(null=True, blank=True)
 
+    class Meta:
+        # Een gebruiker mag hetzelfde boek niet meerdere keren op dezelfde dag toevoegen.
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'book', 'Date'],
+                name='uniek_leesmoment_per_boek_per_dag',
+            )
+        ]
+
     def __str__(self):
         return f"{self.book.Name} ({self.Date})"
 
