@@ -1,5 +1,5 @@
 from django import forms
-from .models import Profile, Book
+from .models import Profile, Book, ReadingSession
 
 
 
@@ -20,3 +20,16 @@ class BookForm(forms.ModelForm):
     class Meta:
         model = Book
         fields = ['Name', 'PublicationYear', 'genre']
+    
+
+class ReadingSessionForm(forms.ModelForm):
+    class Meta:
+        model = ReadingSession
+        fields = ['book', 'Date', 'Score']
+        widgets = {
+            'Date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['book'].queryset = Book.objects.filter(Approved=True)

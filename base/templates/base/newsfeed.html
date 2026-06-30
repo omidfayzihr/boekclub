@@ -1,0 +1,28 @@
+{% extends 'base/base.html' %}
+{% block content %}
+
+<table border="1" style="border-collapse: collapse; width: 100%; text-align: left;">
+    <thead>
+        <tr style="background-color: #f2f2f2;">
+            <th style="padding: 8px;">Datum</th>
+            <th style="padding: 8px;">Lezer</th>
+            <th style="padding: 8px;">Boek</th>
+            <th style="padding: 8px;">Score</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for sessie in sessies %}
+        <tr>
+            <td style="padding: 8px;">{{ sessie.Date|date:"d-m-Y" }}</td>
+            <td style="padding: 8px;">{{ sessie.user.username }}</td> 
+            <td style="padding: 8px;"><a href="{% url 'boek_detail' sessie.book.id %}">{{ sessie.book.Name }}</a></td>
+            <td style="padding: 8px;">{{ sessie.Score }}/10</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" style="padding: 8px; text-align: center;">Er zijn nog geen leesmomenten geregistreerd.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

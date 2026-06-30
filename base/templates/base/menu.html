@@ -8,6 +8,9 @@
                 <a href="{% url 'boeken_beheer' %}">Boeken goedkeuren</a>
             {% endif %}
             <a href="{% url 'profiel' %}">Profiel</a>
+            <a href="{% url 'boeken_overzicht' %}">Boeken</a>
+            <a href="{% url 'leesmoment_toevoegen' %}">Leesmoment toevoegen</a>
+            <a href="{% url 'newsfeed' %}">Newsfeed</a>
             <span class="nav-user">Hoi, {{ user.username }}</span>
             <form method="post" action="{% url 'logout' %}" class="logout-form">
                 {% csrf_token %}

@@ -1,0 +1,28 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<h2>Boeken</h2>
+
+{% if boeken %}
+<ul>
+    {% for boek in boeken %}
+    <li>{{ boek.Name }} ({{ boek.PublicationYear }}) — {{ boek.genre }}</li>
+    {% endfor %}
+</ul>
+
+<div class="pagination">
+    {% if boeken.has_previous %}
+        <a href="?page=1">« Eerste</a>
+        <a href="?page={{ boeken.previous_page_number }}">Vorige</a>
+    {% endif %}
+
+    <span>Pagina {{ boeken.number }} van {{ boeken.paginator.num_pages }}</span>
+
+    {% if boeken.has_next %}
+        <a href="?page={{ boeken.next_page_number }}">Volgende</a>
+        <a href="?page={{ boeken.paginator.num_pages }}">Laatste »</a>
+    {% endif %}
+</div>
+{% else %}
+<p>Nog geen goedgekeurde boeken.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base/base.html' %}
+{% block content %}
+
+<div style="font-family: sans-serif; max-width: 500px; margin: 20px auto; padding: 15px; border: 1px solid #ccc;">
+    
+    <p><a href="{% url 'newsfeed' %}">&larr; Terug naar Newsfeed</a></p>
+
+    <h1>{{ boek.Name }}</h1>
+    <p><strong>genre:</strong> {{ boek.genre|default:"Onbekend" }}</p>
+    <p><strong>Publicatiejaar:</strong> {{ boek.PublicationYear|default:"Onbekend" }}</p>
+    
+    <hr>
+
+    <h3>Statistieken</h3>
+    <p><strong>Totaal gelezen:</strong> {{ boek.readingsession_set.count }} keer</p>
+    
+    <p><strong>Gemiddelde score:</strong> {{ gemiddelde_score|default:"Nog geen scores" }}</p>
+
+</div>
+
+{% endblock %}
