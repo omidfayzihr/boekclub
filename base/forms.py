@@ -1,5 +1,6 @@
 from django import forms
-from .models import Profile
+from .models import Profile, Book
+
 
 
 class ProfileForm(forms.ModelForm):
@@ -14,3 +15,8 @@ class ProfileForm(forms.ModelForm):
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
         }
+
+class BookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        fields = ['Name', 'PublicationYear', 'genre']

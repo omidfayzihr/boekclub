@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+{% block content %}
+<h2>Boeken goedkeuren</h2>
+
+{% if boeken %}
+<ul>
+    {% for boek in boeken %}
+    <li>
+        {{ boek.Name }} ({{ boek.PublicationYear }}, {{ boek.genre }})
+        <form method="post" action="{% url 'boek_goedkeuren' boek.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Goedkeuren</button>
+        </form>
+        <form method="post" action="{% url 'boek_afkeuren' boek.id %}" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit">Afkeuren</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Geen boeken die wachten op goedkeuring.</p>
+{% endif %}
+{% endblock %}
